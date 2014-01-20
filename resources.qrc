@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/titleBar">
+        <file>Assets/images/close.png</file>
+        <file>Assets/images/custom_icon.png</file>
+        <file>Assets/images/maximize.png</file>
+        <file>Assets/images/minimize.png</file>
+        <file>Assets/images/restore.png</file>
+        <file>Assets/font/AlternateGotNo3D.ttf</file>
+    </qresource>
+</RCC>
