@@ -1,0 +1,31 @@
+MainWindow {
+  background-color: rgba(255, 0, 0, 100%);
+  border: 1px solid rgba(255, 255, 255, 1%);
+}
+
+
+WindowTitle {
+  border-bottom: 1px solid rgb(235, 233, 230);
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  background-color: rgb(252, 250, 247);
+}
+
+QPushButton {
+  background-color: transparent;
+  background-repeat: none;
+  border: none;
+}
+
+QPushButton#closeButton {
+  background-image: url(:titleBar/Assets/images/close.png);
+}
+
+QPushButton#minimizeButton {
+  background-image: url(:titleBar/Assets/images/minimize.png);
+}
+
+QPushButton#maximizeButton {
+  background-image: url(:titleBar/Assets/images/maximize.png);
+}

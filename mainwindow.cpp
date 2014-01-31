@@ -1,15 +1,16 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget * parent) :
     QWidget(parent),
     sizeGrip(this),
     button(this),
     textLabel(this),
     spacer(100, 100),
-    currentState(STATE_OFF)
+    currentState(STATE_OFF),
+    currentShadowSize(0)
 {
     setLayout(&mainLayout);
-    mainLayout.setMargin(0);
+    mainLayout.setMargin(currentShadowSize);
     mainLayout.setSpacing(0);
     mainLayout.setRowStretch(1 , 1);
 
@@ -17,9 +18,15 @@ MainWindow::MainWindow(QWidget *parent) :
     mainLayout.addWidget(&button);
 
 
-    textLabel.setStyleSheet("QLabel { color: rgb(228, 220, 207); font-style: bold; font-size: 12px; }");
-    textLabel.setFont(QFont(":/Assets/font/AlternateGotNo3D.ttf"));
+    textLabel.setStyleSheet("QLabel { color: rgb(204, 204, 204); font-style: bold; font-size: 16px; }");
+    QFont font("AlternateGotNo3D");
+
+    textLabel.setFont(font);
     textLabel.setText("USE SLIDER TO SWITCH WINDOW STATES");
+
+
+    setAutoFillBackground(false);
+    setAttribute(Qt::WA_TranslucentBackground, true);
 
     mainLayout.addWidget(&textLabel, 2, 0, 1, 1, Qt::AlignHCenter);
     mainLayout.addItem(&spacer, 3, 0, 1, 1, Qt::AlignHCenter);
@@ -30,8 +37,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this, SIGNAL(WindowTitleChanged()), &mainTitle, SLOT(UpdateWindowTitle()) );
     connect(&button, SIGNAL(clicked()), this, SLOT(changeStates()) );
+
+    QDesktopWidget desktop;
+    QRect geom = desktop.availableGeometry(desktop.primaryScreen());
+
     resize(800, 600);
-    setMinimumSize(200, 200);
+    move(geom.width()/2 - width()/2, geom.height()/2 - height()/2);
+    setMinimumSize(400, 400);
     setWindowTitle(tr("Button"));
 
 }
@@ -40,12 +52,23 @@ MainWindow::MainWindow(QWidget *parent) :
 void MainWindow::paintEvent(QPaintEvent * event)
 {
     Q_UNUSED(event);
-    QPainter painter(this);
-    QBrush background(QColor(255 , 255, 255));
 
-    painter.setBrush(background);
+    QStyleOption options;
+    options.init(this);
+    QStylePainter p(this);
+    p.drawPrimitive(QStyle::PE_Widget, options);
+
+    QPainter painter(this);
+
+    painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::NoPen);
-    painter.drawRect(0, 0, width(), height());
+    painter.setBrush(QBrush(QColor(255, 255, 255)));
+
+
+    painter.drawRect(currentShadowSize, currentShadowSize, width() - 2*currentShadowSize, height() - 2*currentShadowSize);
+
+    update();
+
 }
 
 void  MainWindow::setWindowTitle( const  QString  & title)
@@ -57,13 +80,25 @@ void  MainWindow::setWindowTitle( const  QString  & title)
 void  MainWindow::resizeEvent(QResizeEvent  * event)
 {
     Q_UNUSED(event);
-    sizeGrip.move   (width () - 30, height () - 30);
+    if(isMaximized() || currentState == STATE_OFF)
+        currentShadowSize = 0;
+    else
+        currentShadowSize = SHADOW_SIZE;
+
+    mainLayout.setMargin(currentShadowSize);
+
+    sizeGrip.move   (width () - 30 - currentShadowSize, height () - 30 - currentShadowSize);
     sizeGrip.resize (           30,             30);
+
 }
 
 void MainWindow::changeStates()
 {
-    switch (currentState) {
+    int deltaWindowSize = 28;
+    int shadowCorrection = 2*SHADOW_SIZE;
+
+    switch (currentState)
+    {
     case STATE_OFF:
         currentState = STATE_ON;
 
@@ -71,18 +106,29 @@ void MainWindow::changeStates()
         sizeGrip.show();
 
         setWindowFlags(Qt::FramelessWindowHint);
+
+        resize(width() + shadowCorrection, height() + deltaWindowSize + shadowCorrection );
+        move(pos().x() - shadowCorrection/2, pos().y() - shadowCorrection/2);
+
+        update();
         show();
         break;
 
     case STATE_ON:
         currentState = STATE_OFF;
+
         mainTitle.hide();
         sizeGrip.hide();
-        show();
 
-        Qt::WindowFlags flags = windowFlags();
+
+        Qt::WindowFlags flags = windowFlags() ;
         flags &= ~Qt::FramelessWindowHint;
         setWindowFlags(flags);
+
+        resize(width() - shadowCorrection, height() - deltaWindowSize - shadowCorrection);
+        move(pos().x() + shadowCorrection/2, pos().y() + shadowCorrection/2);
+
+        update();
         show();
         break;
     }

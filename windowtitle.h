@@ -1,21 +1,22 @@
 #ifndef WINDOWTITLE_H
 #define WINDOWTITLE_H
 
-#include "titlebutton.h"
 
 #include<QHBoxLayout>
 #include <QCoreApplication>
 #include <QWidget>
+#include <QFrame>
 #include <QPixmap>
 #include <QPainter>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPushButton>
 
-class WindowTitle : public QWidget
+class WindowTitle : public QFrame
 {
     Q_OBJECT
 public:
-    explicit WindowTitle(QWidget *parent = 0);
+    explicit WindowTitle(QWidget * parent = 0);
     ~WindowTitle();
 
 signals:
@@ -33,22 +34,17 @@ protected:
     void mouseReleaseEvent(QMouseEvent * event = 0);
     void mouseMoveEvent(QMouseEvent * event = 0);
 
-    void resizeEvent(QResizeEvent * event = 0);
-    void paintEvent(QPaintEvent * event = 0);
-
 private:
-    QPixmap * pixmapCache;
     QLabel title;
     QGridLayout titleLayout;
     QHBoxLayout buttonsLayout;
+    QHBoxLayout labelLayout;
 
-    // title icon
     QLabel icon;
 
-    // buttons
-    TitleButton  maximizeButton;
-    TitleButton  minimizeButton;
-    TitleButton  closeButton;
+    QPushButton  maximizeButton;
+    QPushButton  minimizeButton;
+    QPushButton  closeButton;
 
     QPoint mousePosition;
 };

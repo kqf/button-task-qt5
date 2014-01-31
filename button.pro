@@ -15,12 +15,10 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     windowtitle.cpp \
-    titlebutton.cpp \
     customslider.cpp
 
 HEADERS  += mainwindow.h \
     windowtitle.h \
-    titlebutton.h \
     customslider.h
 
 

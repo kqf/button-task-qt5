@@ -6,5 +6,6 @@
         <file>Assets/images/minimize.png</file>
         <file>Assets/images/restore.png</file>
         <file>Assets/font/AlternateGotNo3D.ttf</file>
+        <file>Assets/style.qss</file>
     </qresource>
 </RCC>

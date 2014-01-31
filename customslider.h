@@ -7,29 +7,23 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPoint>
-#include <QStateMachine>
-#include <QSignalTransition>
 #include <QColor>
 #include <QMouseEvent>
+#include <cmath>
 
-#include<iostream>
 
 class CustomSlider :  public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(float position READ position WRITE setSliderPosition)
-    Q_PROPERTY(QColor background READ background WRITE setBackground)
+    Q_PROPERTY(qreal position READ position WRITE setSliderPosition)
 
 
 public:
     explicit CustomSlider(QWidget * parent = 0);
     ~CustomSlider();
 
-    float position() const { return sliderPosition; }
-    void setSliderPosition(float p) { sliderPosition = p; }
-
-    QColor background() const { return canvasColor; }
-    void setBackground(QColor color) {  canvasColor = color; }
+    qreal position() const { return sliderPosition; }
+    void setSliderPosition(qreal p) { sliderPosition = p; }
 
     QSize sizeHint() const { return QSize(width(), height()); }
 
@@ -37,23 +31,20 @@ public:
 protected:
     void paintEvent(QPaintEvent * event = 0);
     void mousePressEvent(QMouseEvent * event = 0);
-//    void resizeEvent(QResizeEvent * event = 0);
 
 signals:
     void clicked();
 
-public slots:
-//    void buttonClicked();
+private:
+    bool withinArea(QPoint pos) const;
+
+    // euclidian distance --
+    qreal dist(qreal x1, qreal y1, qreal x2, qreal y2) const { return sqrt( pow(x1 - x2, 2) + pow(y1 - y2, 2) ); }
 
 private:
-    QStateMachine * stateSwitcher;
-    QState * state1;
-    QState * state2;
-    QSignalTransition * transition1;
-    QSignalTransition * transition2;
-    QColor canvasColor;
+    QPropertyAnimation * animation;
+    qreal sliderPosition;
 
-    float sliderPosition;
 };
 
 #endif // CUSTOMSLIDER_H
