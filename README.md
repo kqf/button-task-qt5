@@ -3,4 +3,4 @@ Interview task implemented
 
 ## Examples
 The button changes the state of the entire window 
-[](Assets/images/example.png)
+![example](Assets/images/example.png)
